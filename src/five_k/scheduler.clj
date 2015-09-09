@@ -13,7 +13,7 @@
                 :mem min-mem}
     :executor {:executor-id "five-k-executor"
                :command {:shell true
-                         :value "java -jar /vagrant/target/uberjar/five_k-0.1.0-SNAPSHOT-standalone.jar -m five-k.system executor" }}}])
+                         :value "java -jar /vagrant/target/uberjar/five-k-0.1.0-SNAPSHOT-standalone.jar -m five-k.system executor" }}}])
 
 (defn resources?
   [{:keys [cpus mem]}]
