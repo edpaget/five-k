@@ -1,4 +1,4 @@
-(ns simple_marathon .scheduler
+(ns five-k.scheduler
   (:require [clj-mesos.scheduler :as mesos]))
 
 (def min-cpu 0.5)

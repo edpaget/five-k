@@ -1,4 +1,4 @@
-(ns simple_marathon.components.executor-driver
+(ns five-k.component.executor-driver
   (:require [clj-mesos.executor :as mesos]
             [com.stuartsierra.component :as component]))
 

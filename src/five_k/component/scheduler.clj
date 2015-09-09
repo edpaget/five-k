@@ -1,4 +1,4 @@
-(ns simple_marathon.components.scheduler
+(ns five-k.component.scheduler
   (:require [com.stuartsierra.component :as component]
             [five-k.scheduler :as sched]))
 

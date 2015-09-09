@@ -1,4 +1,4 @@
-(ns simple_marathon.components.scheduler-driver
+(ns five-k.component.scheduler-driver
   (:require [clj-mesos.scheduler :as mesos]
             [com.stuartsierra.component :as component]))
 

@@ -1,51 +1,42 @@
-(ns simple_marathon.system
-    (:require [com.stuartsierra.component :as component]
-              [simple_marathon.components.executor-driver :refer [new-executor-driver]]
-              [simple_marathon.components.scheduler-driver :refer [new-scheduler-driver]]
-              [simple_marathon.components.exhibitor :refer [new-zookeeper]]
-              [simple_marathon.components.leadership :refer [new-leadership]]
-              [simple_marathon.components.scheduler :refer [new-scheduler]]
-              [simple_marathon.executor :refer [executor]]
-              [simple_marathon.scheduler :refer [scheduler]])
-    (:gen-class))
+(ns five-k.system
+  (:require [com.stuartsierra.component :as component]
+            [five-k.component.executor-driver :refer [new-executor-driver]]
+            [five-k.component.scheduler-driver :refer [new-scheduler-driver]]
+            [five-k.component.leader-driver :refer [new-leader-driver]]
+            [five-k.component.curator :refer [new-curator]]
+            [five-k.component.scheduler :refer [new-scheduler]]
+            [five-k.executor :refer [executor]]
+            [five-k.scheduler :refer [scheduler] :as sched])
+  (:gen-class))
 
 (defn executor-system
-  [{:keys [exhibitor zk-path]}]
+  []
   (component/system-map
-   :zookeeper (new-zookeeper exhibitor)
-   :driver (component/using
-            (new-executor-driver (executor))
-            [:zookeeper])))
+   :driver (new-executor-driver (executor))))
 
 (defn scheduler-system
-  [{:keys [master exhibitor zk-path name user]
-    :or {master "zk://localhost:2181/mesos" name "simple_marathon"}}]
-  (let [scheduler-state (atom {:leader false})
-        leader-fn (fn [_ _] (while true
-                              (swap! scheduler-state assoc :leader true)
-                              (Thread/sleep (* 50 10000))))
-        loser-fn (fn [_ _] (swap! scheduler-state assoc :leader true))]
-    (component/system-map
-     :zookeeper (new-zookeeper exhibitor)
-     :leadership (component/using
-                  (new-scheduler leader-fn loser-fn path)
-                  [:zookeeper])
-     :scheduler (component/using
-                 (new-scheduler path)
-                 [:zookeeper])
-     :driver (component/using
-              (new-scheduler-driver master user name)
-              [:scheduler]))))
+  [master n-tasks task-launcher]
+  (component/system-map
+   :scheduler (new-scheduler n-tasks task-launcher)
+   :driver (component/using
+            (new-scheduler-driver master)
+            [:scheduler])))
+
+(defn ha-scheduler-system
+  [master n-tasks exhibitor zk-path task-launcher]
+  (component/system-map
+   :curator (new-curator exhibitor)
+   :scheduler (new-scheduler n-tasks task-launcher)
+   :leader-driver (component/using
+                   (new-leader-driver zk-path master "five-k" "five-k")
+                   [:curator :scheduler])))
 
 (defn -main
-  [command-type & [master exhibitor-host exhibitor-port zookeeper-path]]
-  (let [system (condp = command-type
-                 "scheduler" (scheduler-system {:master master
-                                                :exhibitor {:hosts [exhibitor-host]
-                                                            :port exhibitor-port
-                                                            :backup "localhost:2181"}
-                                                :zk-path zookeeper-path})
-                 "executor" (executor-system))]
+  [command-type & [scheduler-type master n-tasks & _]]
+  (let [system (condp = [command-type scheduler-type]
+                 ["scheduler" "jar"] (scheduler-system master n-tasks sched/jar-task-info)
+                 ["scheduler" "ha"] (ha-scheduler-system master n-tasks sched/jar-task-info)
+                 ["executor" nil] (executor-system))]
     (component/start system)
     (while true
       (Thread/sleep 1000000))))

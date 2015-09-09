@@ -1,4 +1,4 @@
-(ns simple_marathon .executor
+(ns five-k.executor
   (:require [clj-mesos.executor :as mesos])
   (:import [java.util Date]))
 

@@ -12,11 +12,9 @@
             [clojure.tools.namespace.repl :refer [refresh refresh-all]]
             [alembic.still :refer [lein]]
             [com.stuartsierra.component :as component]
-            [simple-marathon .system :as sys]
-            [simple-marathon .scheduler :as sched]
+            [five-k.system :as sys]
+            [five-k.scheduler :as sched]
             [clojure.java.shell :refer [sh]]))
-
-(def configuration (atom nil))
 
 (defn build-uberjar
   []
