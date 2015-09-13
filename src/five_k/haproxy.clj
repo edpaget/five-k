@@ -38,6 +38,7 @@
   ;; Change the file in the system and reload ha-proxy
   (let [path (str "/tmp/haproxy.cfg." (System/currentTimeMillis))
         _ (generate-config path)
+        _ (println "Updating configuration file")
         _ (sh "sudo" "cp" haproxy-config-system-path (str haproxy-config-system-path ".bak"))
         _ (sh "sudo" "mv" path haproxy-config-system-path)]
-    (reload)))
+    (println (reload))))
