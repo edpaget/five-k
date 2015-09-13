@@ -46,12 +46,16 @@ listen stats
 frontend http_api
         bind *:80
         mode tcp
-        default_backend five_k_servers
+        default_backend {{services[0].name}}
 
-backend five_k_servers
+
+{% for service in services %}
+backend {{service.name}}
         mode tcp
         option tcplog
         balance roundrobin
-        {{CONTENT}}
-        # content looks like
-        #  server <name> 10.10.4.10 weight 1 maxconn 800 check inter 5s fall 1 downinter 2s fastinter 500ms
+        {% for server in service.servers %}
+        server {{server.name}} {{server.address}}:{{server.port}} weight 1 maxconn 800 check inter 5s fall 1 downinter 2s fastiner 500ms
+        {% endfor %}
+{% endfor %}
+

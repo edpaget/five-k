@@ -1,0 +1,42 @@
+# ~/.tmuxinator/five-k.yml
+
+name: five-k
+root: ~/work/mesos/five-k
+
+# Optional tmux socket
+# socket_name: foo
+
+# Runs before everything. Use it to start daemons etc.
+pre: vagrant up
+
+# Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
+# pre_window: rbenv shell 2.0.0-p247
+
+# Pass command line options to tmux. Useful for specifying a different tmux.conf.
+# tmux_options: -f ~/.tmux.mac.conf
+
+# Change the command to call tmux.  This can be used by derivatives/wrappers like byobu.
+# tmux_command: byobu
+
+# Specifies (by name or index) which window will be selected on project startup. If not set, the first window is used.
+startup_window: master
+
+# Controls whether the tmux session should be attached to automatically. Defaults to true.
+# attach: false
+
+# Runs after everything. Use it to attach to tmux with custom options etc.
+# post: tmux -CC attach -t five-k
+
+windows:
+  - master:
+      layout: main-vertical
+      panes:
+        - repl:
+            - vagrant ssh master
+            - cd /vagrant
+            - lein repl
+        - server:
+            - vagrant ssh master
+  - slave-0: vagrant ssh slave_0
+  - slave-1: vagrant ssh slave_1
+  - debug: 
