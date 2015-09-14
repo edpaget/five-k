@@ -43,14 +43,14 @@ listen stats
         stats show-legends
         stats show-desc 5K Servers
 
-frontend http_api
-        bind *:80
-        mode tcp
-        default_backend {{default-service}}
-
 
 {% for service in services %}
-backend {{service.name}}
+frontend {{service.name}}_frontend
+         bind *:{{service.port}}
+         mode tcp
+         default_backend {{service.name}}_backend
+
+backend {{service.name}}_backend
         mode tcp
         option tcplog
         balance roundrobin

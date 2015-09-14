@@ -9,12 +9,13 @@
 (def haproxy-config-system-path "/etc/haproxy/haproxy.cfg")
 
 (def services (atom [{:name "backend_five_k"
-                              :servers [{:name "slave_0"
-                                         :address "10.10.4.10"
-                                         :port 8080}
-                                        {:name "slave_1"
-                                         :address "10.10.4.11"
-                                         :port 8080}]}]))
+                      :port 80
+                      :servers [{:name "slave_0"
+                                 :address "10.10.4.10"
+                                 :port 8080}
+                                {:name "slave_1"
+                                 :address "10.10.4.11"
+                                 :port 8080}]}]))
 
 (defn update-service! [name servers]
   (let [without-service (filter #(not= (:name %)) @services)]
