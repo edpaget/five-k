@@ -11,6 +11,7 @@
                  [http-kit "2.1.19"]
                  [liberator "0.13"]
                  [org.clojure/clojure "1.6.0"]
+                 [org.clojure/tools.logging "0.2.6"]
                  [ring/ring-json "0.4.0"]
                  [selmer "0.9.1"]]
   :target-path "target/%s"
