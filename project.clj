@@ -3,14 +3,19 @@
   :url "https://github.com/prasincs/five-k"
   :license {:name "MIT"
             :url "https://github.com/prasincs/five-k/LICENSE"}
-  :dependencies [[org.clojure/clojure "1.6.0"]
-                 [edpaget/clj-mesos "0.22.1-SNAPSHOT"]
+  :dependencies [[cheshire "5.5.0"]
+                 [com.stuartsierra/component "0.2.3"]
+                 [compojure "1.4.0"]
                  [curator "0.0.6"]
-                 [selmer "0.9.1"]
-                 [com.stuartsierra/component "0.2.3"]]
+                 [edpaget/clj-mesos "0.22.1-SNAPSHOT"]
+                 [http-kit "2.1.19"]
+                 [liberator "0.13"]
+                 [org.clojure/clojure "1.6.0"]
+                 [ring/ring-json "0.4.0"]
+                 [selmer "0.9.1"]]
   :target-path "target/%s"
-  :profiles {:dev {:dependencies [[org.clojure/tools.namespace "0.2.7"]
-                                  [alembic "0.3.2"]]
+  :profiles {:dev {:dependencies [[alembic "0.3.2"]
+                                  [org.clojure/tools.namespace "0.2.7"]]
                    :source-paths ["dev"]}
              :user {:plugins [[cider/cider-nrepl "0.9.1"]
                               [refactor-nrepl "1.1.0"]

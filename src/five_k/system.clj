@@ -6,7 +6,8 @@
             [five-k.component.curator :refer [new-curator]]
             [five-k.component.scheduler :refer [new-scheduler]]
             [five-k.executor :refer [executor]]
-            [five-k.scheduler :refer [scheduler] :as sched])
+            [five-k.scheduler :refer [scheduler] :as sched]
+            [five-k.example-webserver :as web])
   (:gen-class))
 
 (defn executor-system
@@ -36,7 +37,8 @@
   (let [system (condp = [command-type scheduler-type]
                  ["scheduler" "jar"] (scheduler-system master n-tasks sched/jar-task-info)
                  ["scheduler" "ha"] (ha-scheduler-system master n-tasks sched/jar-task-info)
-                 ["executor" nil] (executor-system))]
+                 ["executor" nil] (executor-system)
+                 ["example-webserver" "9090"] (web/start-server 9090))]
     (component/start system)
     (while true
       (Thread/sleep 1000000))))

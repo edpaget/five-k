@@ -15,6 +15,19 @@
                :command {:shell true
                          :value "java -jar /vagrant/target/uberjar/five-k-0.1.0-SNAPSHOT-standalone.jar -m five-k.system executor" }}}])
 
+
+(defn example-webserver-task-info
+  [uuid {:keys [slave-id]}]
+  [{:name "five-k-webserver"
+    :task-id uuid
+    :slave-id slave-id
+    :resources {:cpus min-cpu
+                :mem min-mem}
+    :executor {:executor-id "five-k-webserver"
+               :command {:shell true
+                         :value "java -jar /vagrant/target/uberjar/five-k-0.1.0-SNAPSHOT-standalone.jar -m five-k.system example-webserver 9090" }}}])
+
+
 (defn resources?
   [{:keys [cpus mem]}]
   (and (>= cpus min-cpu)
